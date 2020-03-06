@@ -2408,6 +2408,14 @@
             return false;
         };
         /**
+         * Retrieve a saved custom property of the TokenReponse object. Only if predefined in authconfig.
+         */
+        OAuthService.prototype.getCustomTokenResponseProperty = function (requestedProperty) {
+            return this._storage && this.config.customTokenParameters
+                && (this.config.customTokenParameters.indexOf(requestedProperty) >= 0)
+                ? this._storage.getItem(requestedProperty) : null;
+        };
+        /**
          * Returns the auth-header that can be used
          * to transmit the access_token to a service
          */
@@ -2592,7 +2600,7 @@
         };
         OAuthService.prototype.createChallangeVerifierPairForPKCE = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var verifier, challengeRaw, challange;
+                var verifier, challengeRaw, challenge;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -2605,8 +2613,8 @@
                             return [4 /*yield*/, this.crypto.calcHash(verifier, 'sha-256')];
                         case 2:
                             challengeRaw = _a.sent();
-                            challange = base64UrlEncode(challengeRaw);
-                            return [2 /*return*/, [challange, verifier]];
+                            challenge = base64UrlEncode(challengeRaw);
+                            return [2 /*return*/, [challenge, verifier]];
                     }
                 });
             });

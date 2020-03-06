@@ -2002,6 +2002,14 @@ let OAuthService = class OAuthService extends AuthConfig {
         return false;
     }
     /**
+     * Retrieve a saved custom property of the TokenReponse object. Only if predefined in authconfig.
+     */
+    getCustomTokenResponseProperty(requestedProperty) {
+        return this._storage && this.config.customTokenParameters
+            && (this.config.customTokenParameters.indexOf(requestedProperty) >= 0)
+            ? this._storage.getItem(requestedProperty) : null;
+    }
+    /**
      * Returns the auth-header that can be used
      * to transmit the access_token to a service
      */
@@ -2180,8 +2188,8 @@ let OAuthService = class OAuthService extends AuthConfig {
             }
             const verifier = yield this.createNonce();
             const challengeRaw = yield this.crypto.calcHash(verifier, 'sha-256');
-            const challange = base64UrlEncode(challengeRaw);
-            return [challange, verifier];
+            const challenge = base64UrlEncode(challengeRaw);
+            return [challenge, verifier];
         });
     }
     extractRecognizedCustomParameters(tokenResponse) {
@@ -2189,7 +2197,7 @@ let OAuthService = class OAuthService extends AuthConfig {
             return {};
         }
         let foundParameters = {};
-        this.config.customTokenParameters.forEach(recognizedParameter => {
+        this.config.customTokenParameters.forEach((recognizedParameter) => {
             if (tokenResponse[recognizedParameter]) {
                 foundParameters[recognizedParameter] = tokenResponse[recognizedParameter];
             }

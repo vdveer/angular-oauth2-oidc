@@ -301,6 +301,10 @@ export declare class OAuthService extends AuthConfig implements OnDestroy {
      */
     hasValidIdToken(): boolean;
     /**
+     * Retrieve a saved custom property of the TokenReponse object. Only if predefined in authconfig.
+     */
+    getCustomTokenResponseProperty(requestedProperty: string): any;
+    /**
      * Returns the auth-header that can be used
      * to transmit the access_token to a service
      */
