@@ -2217,6 +2217,7 @@ var OAuthService = /** @class */ (function (_super) {
      * @param noRedirectToLogoutUrl
      */
     OAuthService.prototype.logOut = function (noRedirectToLogoutUrl) {
+        var _this = this;
         if (noRedirectToLogoutUrl === void 0) { noRedirectToLogoutUrl = false; }
         var id_token = this.getIdToken();
         this._storage.removeItem('access_token');
@@ -2230,6 +2231,9 @@ var OAuthService = /** @class */ (function (_super) {
         this._storage.removeItem('access_token_stored_at');
         this._storage.removeItem('granted_scopes');
         this._storage.removeItem('session_state');
+        if (this.config.customTokenParameters) {
+            this.config.customTokenParameters.forEach(function (customParam) { return _this._storage.removeItem(customParam); });
+        }
         this.silentRefreshSubject = null;
         this.eventsSubject.next(new OAuthInfoEvent('logout'));
         if (!this.logoutUrl) {
