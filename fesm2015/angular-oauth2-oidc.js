@@ -1457,8 +1457,8 @@ let OAuthService = class OAuthService extends AuthConfig {
             this._storage.setItem('refresh_token', refreshToken);
         }
         if (customParameters) {
-            Object.keys(customParameters).forEach(key => {
-                this._storage.setItem(key, customParameters[key]);
+            customParameters.forEach((value, key) => {
+                this._storage.setItem(key, value);
             });
         }
     }
@@ -2007,7 +2007,8 @@ let OAuthService = class OAuthService extends AuthConfig {
     getCustomTokenResponseProperty(requestedProperty) {
         return this._storage && this.config.customTokenParameters
             && (this.config.customTokenParameters.indexOf(requestedProperty) >= 0)
-            ? this._storage.getItem(requestedProperty) : null;
+            && this._storage.getItem(requestedProperty) !== null
+            ? JSON.parse(this._storage.getItem(requestedProperty)) : null;
     }
     /**
      * Returns the auth-header that can be used
@@ -2193,13 +2194,13 @@ let OAuthService = class OAuthService extends AuthConfig {
         });
     }
     extractRecognizedCustomParameters(tokenResponse) {
+        let foundParameters = new Map();
         if (!this.config.customTokenParameters) {
-            return {};
+            return foundParameters;
         }
-        let foundParameters = {};
         this.config.customTokenParameters.forEach((recognizedParameter) => {
             if (tokenResponse[recognizedParameter]) {
-                foundParameters[recognizedParameter] = tokenResponse[recognizedParameter];
+                foundParameters.set(recognizedParameter, JSON.stringify(tokenResponse[recognizedParameter]));
             }
         });
         return foundParameters;

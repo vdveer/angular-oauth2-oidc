@@ -1844,8 +1844,8 @@
                 this._storage.setItem('refresh_token', refreshToken);
             }
             if (customParameters) {
-                Object.keys(customParameters).forEach(function (key) {
-                    _this._storage.setItem(key, customParameters[key]);
+                customParameters.forEach(function (value, key) {
+                    _this._storage.setItem(key, value);
                 });
             }
         };
@@ -2413,7 +2413,8 @@
         OAuthService.prototype.getCustomTokenResponseProperty = function (requestedProperty) {
             return this._storage && this.config.customTokenParameters
                 && (this.config.customTokenParameters.indexOf(requestedProperty) >= 0)
-                ? this._storage.getItem(requestedProperty) : null;
+                && this._storage.getItem(requestedProperty) !== null
+                ? JSON.parse(this._storage.getItem(requestedProperty)) : null;
         };
         /**
          * Returns the auth-header that can be used
@@ -2620,13 +2621,13 @@
             });
         };
         OAuthService.prototype.extractRecognizedCustomParameters = function (tokenResponse) {
+            var foundParameters = new Map();
             if (!this.config.customTokenParameters) {
-                return {};
+                return foundParameters;
             }
-            var foundParameters = {};
             this.config.customTokenParameters.forEach(function (recognizedParameter) {
                 if (tokenResponse[recognizedParameter]) {
-                    foundParameters[recognizedParameter] = tokenResponse[recognizedParameter];
+                    foundParameters.set(recognizedParameter, JSON.stringify(tokenResponse[recognizedParameter]));
                 }
             });
             return foundParameters;
