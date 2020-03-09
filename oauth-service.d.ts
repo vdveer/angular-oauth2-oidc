@@ -225,7 +225,7 @@ export declare class OAuthService extends AuthConfig implements OnDestroy {
      */
     resetImplicitFlow(): void;
     protected callOnTokenReceivedIfExists(options: LoginOptions): void;
-    protected storeAccessTokenResponse(accessToken: string, refreshToken: string, expiresIn: number, grantedScopes: String, customParameters?: Map<String, String>): void;
+    protected storeAccessTokenResponse(accessToken: string, refreshToken: string, expiresIn: number, grantedScopes: String, customParameters?: Map<string, string>): void;
     /**
      * Delegates to tryLoginImplicitFlow for the sake of competability
      * @param options Optional options.
